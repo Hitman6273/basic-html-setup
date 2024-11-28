@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Styled Registration Form</title>
+    <style>
+ :root {
+    --primary-color: #007bff;
+    --background-color: #f8f9fa;
+    --text-color: #343a40;
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --input-focus-border: #80bdff;
+    --button-bg: #28a745;
+    --button-hover-bg: #218838;
+    --link-color: #007bff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+form {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h3 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    text-align: left;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="password"] {
+    width: calc(100% - 16px);
+    padding: 10px;
+    margin: 8px 0 20px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="password"]:focus {
+    border-color: var(--input-focus-border);
+    outline: none;
+}
+
+.my_btn {
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.my_btn:hover {
+    background-color: var(--button-hover-bg);
+    transform: translateY(-2px);
+}
+
+.footer-link {
+    display: block;
+    margin-top: 15px;
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+}
+
+    </style>
+</head>
+<body>
+
+    <form id="RegForm" action="/login" method="GET">
+        <h3>Sign Up</h3>
+        <label for="name">Username</label>
+        <input type="text" name="name" id="name" placeholder="Enter your username" required>
+        
+        <label for="number">Phone Number</label>
+        <p>start with +254... format</p>
+        <input type="tel" name="number" id="number" placeholder="Enter your number" required>
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Enter your password" required>
+
+        <input type="submit" class="my_btn" value="Submit">
+        <a href="/login" class="footer-link">Click here to log in</a>
+    </form>
+
+    <script>
+        const RegForm = document.getElementById('RegForm');
+
+        RegForm.addEventListener("submit", (event) => {
+            event.preventDefault(); // Prevent the default form submission
+
+            const name = RegForm.name.value;
+            const number = RegForm.number.value;
+            const password = RegForm.password.value;
+
+            const obj = { name, number, password }; // Use form data
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(obj)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errData => {
+                        throw new Error(`Error: ${JSON.stringify(errData)}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                window.location.href = '/login';
+            })
+            .catch((error) => {
+                console.error('Fetch error:', error);
+                alert('Registration failed. Please try again. ' + error.message);
+            });
+        });
+    </script>
+</body>
+</html>

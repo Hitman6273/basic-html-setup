@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 400px;
+            margin-top: 100px;
+        }
+        .form-control {
+            border-radius: 0.5rem;
+        }
+        .btn-primary {
+            background-color: #28a745;
+            border-color: darkgreen;
+        }
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: darkgreen;
+        }
+        .footer-link {
+            color: #28a745;
+            text-decoration: none;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: red;
+            display: none;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 class="text-center mb-4">Login</h3>
+        <form id="login-form" class="bg-white p-4 rounded shadow">
+            <div class="form-group">
+                <label for="number">Phone Number</label>
+                <p>start with +254... format</p>
+                <input type="tel" class="form-control" name="number" id="number" placeholder="Enter your number +254" required pattern="^\+?[1-9]\d{1,14}$" title="Please enter a valid phone number">
+                <div class="error-message" id="number-error">Please enter a valid phone number.</div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                <div class="error-message" id="password-error">Please enter your password.</div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Login</button>
+            <div id="loading">Loading...</div>
+            <div class="error-message" id="form-error">Invalid credentials, please try again.</div>
+        </form>
+        <p class="text-center mt-3">
+            <a href="/" class="footer-link">Click here to sign up</a>
+        </p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+      document.getElementById('login-form').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent the default form submission
+
+    const password = document.getElementById('password').value;
+    const number = document.getElementById('number').value;
+    const user = { number, password };
+
+    document.getElementById('loading').style.display = 'block'; // Show loading indicator
+    document.getElementById('form-error').style.display = 'none'; // Hide previous error messages
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user),
+        });
+
+        if (response.ok) {
+            // Successful login
+            const data = await response.json();
+
+            // Now fetch the user's balance
+            const balanceResponse = await fetch(`/api/amount/${number}`);
+            if (balanceResponse.ok) {
+                const balanceData = await balanceResponse.json();
+                if (balanceData.success) {
+                    // Display user balance in the UI
+                  //  alert(`Welcome! Your balance is ${balanceData.userBalance}`);
+                } else {
+                 //   alert('Unable to fetch balance. Please try again later.');
+                }
+            } else {
+            //    alert('Error fetching balance.');
+            }
+
+            window.location.href = 'home'; // Redirect to home page
+        } else {
+            // Failed login
+            const errorData = await response.json();
+            document.getElementById('form-error').textContent = errorData.error || 'Login failed';
+            document.getElementById('form-error').style.display = 'block'; // Show error message
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('form-error').textContent = 'An error occurred. Please try again.';
+        document.getElementById('form-error').style.display = 'block'; // Show error message
+    } finally {
+        document.getElementById('loading').style.display = 'none'; // Hide loading indicator
+    }
+});
+
+    </script>
+</body>
+</html>

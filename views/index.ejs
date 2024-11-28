@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Payment</title>
+    <style>
+            * {
+                background-color: #f8f9fa; /* Light background for better contrast */
+                margin: 0;
+                padding: 0;
+      
+            }
+            body{
+                display: flex;
+                justify-content: center; /* Center horizontally */
+                align-items: center; /* Center vertically */
+                height: 100vh;
+            }
+            
+            .paymentForm {
+                background-color: #e0e0e0; /* Slightly lighter grey */
+                height: auto; /* Allow height to adjust based on content */
+                width: 250px;
+                border-radius: 5px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                display: flex;
+                flex-direction: column; /* Stack elements vertically */
+                justify-content: center;
+                align-items: center;
+                padding: 20px; /* Add padding for better spacing */
+            }
+            
+            input {
+                width: 100%; /* Full width for inputs */
+                padding: 10px; /* Add padding for comfort */
+                margin: 10px 0; /* Space between inputs */
+                border: 1px solid #ccc; /* Light border */
+                border-radius: 5px; /* Match button styling */
+            }
+            
+            button {
+                background-color: green;
+                color: white;
+                border: none; /* Remove default border */
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 10px; /* Space above button */
+                padding: 10px 15px; /* Comfortable button size */
+                transition: background-color 0.3s; /* Smooth transition */
+            }
+            
+            button:hover {
+                background-color: darkgreen; /* Darker shade on hover */
+            }
+        </style>
+        
+</head>
+<body>
+        <form class="paymentForm" action="/process_payment" method="POST">
+            <input type="text" name="phone" placeholder="Enter your phone number start 254...." required /><br><br>
+            <input type="text" name="Amount" placeholder="Enter Amount to send" required />
+            <button type="submit">Initiate Payment</button>
+        </form>
+        
+
+<script>
+ var phone =document.querySelector(".phone");
+ var button =document.querySelector(".button");
+ var Amount =document.querySelector(".Amount");
+
+ button.addEventListener("click",()=>{
+     var obj=[{phone:phone.value},{Amount:Amount.value}];
+
+ 
+ fetch("/initiate_payment",{
+    method: "GET",
+    headers:{
+        "Content-Type":"application/json"
+    },
+    body:JSON.stringify(obj)
+})
+
+
+ 
+ 
+});
+
+
+</script>
+</body>
+</html>
